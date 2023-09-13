@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Application</title>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      .container {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-top: 1px solid #ccc;
+      }
+      #messages {
+        width: 400px;
+        height: 500px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+        background: rgb(130, 224, 255);
+        padding: 10px;
+        border-radius: 5px;
+      }
+
+      body {
+        font: 13px Helvetica, Arial;
+        background: rgb(70, 118, 133);
+      }
+
+      form {
+        background: #000;
+        padding: 3px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+
+      form input {
+        border: 0;
+        padding: 10px;
+        width: 90%;
+        margin-right: 0.5%;
+      }
+
+      form button {
+        width: 9%;
+        background: rgb(130, 224, 255);
+        border: none;
+        padding: 10px;
+      }
+
+      #messages {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      #messages div {
+        padding: 5px 10px;
+      }
+
+      #messages div:nth-child(odd) {
+        background: #eee;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div id="messages"></div>
+
+      Username: <input id="username" type="text" />
+      <form id="msgForm">
+        <input id="msgInput" type="text" name="msg" />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+    
+    <script>
+      const socket = window.io();
+      const msgForm = document.getElementById("msgForm");
+      const username = document.getElementById("username");
+      const msgInput = document.getElementById("msgInput");
+      const messages = document.getElementById("messages");
+
+      msgForm.onsubmit = (e) => {
+        e.preventDefault();
+        socket.emit(
+          "chatmessage",
+          `${username.value} sayes.... ${msgInput.value}`
+        );
+        msgInput.value = "";
+      };
+
+      socket.on("chatmessage", (data) => {
+        console.log(data);
+        messages.innerHTML += `<p>${data}</>`;
+      });
+    </script>
+  </body>
+</html>
